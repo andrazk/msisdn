@@ -1,1 +1,2 @@
 include baseconfig
+include deploy
