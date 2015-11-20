@@ -1,1 +1,4 @@
 .vagrant/
+server/vendor/
+server/cache/
+server/composer.lock
