@@ -8,7 +8,7 @@ class deploy {
         cwd => '/vagrant/server',
         environment => ['COMPOSER_HOME=/vagrant/server'],
         path =>  [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/', '/usr/local/bin/' ],
-        "unless => 'test -e composer.lock'
+        #unless => 'test -e composer.lock'
     }
 
     # exec { 'deploy-update':
