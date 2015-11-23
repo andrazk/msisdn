@@ -45,5 +45,16 @@ cd /vagrant/server
 vendor/bin/phpunit
 ```
 
+## RPC API
+
+I choose JSON RPC v2.0 over XML RPC because of JSON simplicity and it's small overhead.
+
+Method  | Parameters
+------------- | -------------
+parse   | \<msisdn\>
+
+
+
 Author: Andraž Krašček
+
 E-mail: andraz.krascek@gmail.com
