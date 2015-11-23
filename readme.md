@@ -26,7 +26,7 @@ important: do not take this task lightly. You will be judged according to the qu
 ## Requirements
 
 - [Vagrant](https://docs.vagrantup.com/v2/installation/)
-- [Go](https://golang.org/dl/)
+- [Go](https://golang.org/dl/) (optional)
 
 ## Usage
 
@@ -34,7 +34,9 @@ important: do not take this task lightly. You will be judged according to the qu
 git clone
 cd msisdn
 vagrant up
-go run client/client.go <msisdn_number>
+./client/client.sh <msisdn>
+or
+go run client/client.go <msisdn>
 ```
 
 ## Tests
