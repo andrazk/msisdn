@@ -4,6 +4,7 @@ namespace Msidn\Server;
 
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\PhoneNumberToCarrierMapper;
+use libphonenumber\NumberParseException;
 
 class Instance
 {
@@ -19,12 +20,14 @@ class Instance
      */
     protected $carrierMapper;
 
-
-    public $countryDiallingCode;
-    public $countryIdentifier;
-    public $mnoIdentifier;
-    public $subscriberNumber;
-    public $valid;
+    /**
+     * Public variables, accessible over JSON-RPC
+     */
+    public $countryDiallingCode = 0;
+    public $countryIdentifier = '';
+    public $mnoIdentifier = '';
+    public $subscriberNumber = '';
+    public $valid = false;
 
 
     /**
@@ -86,13 +89,21 @@ class Instance
      */
     public function parse($number)
     {
-        $phoneNumber = $this->numberUtil->parse($number, null);
+        try {
+            $phoneNumber = $this->numberUtil->parse($number, null);
+        } catch (NumberParseException $e) {
+            $this->valid = false;
+            return $this;
+        }
 
-        $this->countryDiallingCode = $phoneNumber->getCountryCode();
+        if (!$this->valid = $this->numberUtil->isValidNumber($phoneNumber)) {
+            return $this;
+        }
+
+        $this->countryDiallingCode = (int)$phoneNumber->getCountryCode();
         $this->countryIdentifier = $this->numberUtil->getRegionCodeForNumber($phoneNumber);
         $this->mnoIdentifier = $this->carrierMapper->getNameForNumber($phoneNumber, 'en_US');
         $this->subscriberNumber = $phoneNumber->getNationalNumber();
-        $this->valid = $this->numberUtil->isValidNumber($phoneNumber);
 
         return $this;
     }
