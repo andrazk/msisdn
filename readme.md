@@ -31,7 +31,7 @@ important: do not take this task lightly. You will be judged according to the qu
 ## Usage
 
 ```
-git clone
+git clone --recursive https://github.com/andrazk/msisdn.git
 cd msisdn
 vagrant up
 ./client/client.sh <msisdn>
