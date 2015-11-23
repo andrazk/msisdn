@@ -56,8 +56,8 @@ class Instance
      */
     public function parse($number)
     {
-        $this->number = $this->numberUtil->parse($number);
+        $this->number = $this->numberUtil->parse($number, null);
 
-        return $this
+        return $this;
     }
 }

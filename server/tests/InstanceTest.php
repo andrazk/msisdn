@@ -17,4 +17,23 @@ class InstanceTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('libphonenumber\PhoneNumberUtil', $instance->getNumberUtil());
     }
+
+    /**
+     * test if parse call numberutli parse
+     * @return void
+     * @author Andraz <andraz@easistent.com>
+     */
+    public function test_parse()
+    {
+        $msisdn = '+38640658494';
+
+        $numberUtilMock = Mockery::mock('libphonenumber\PhoneNumberUtil');
+        $numberUtilMock->shouldReceive('parse')->with($msisdn, null)->once();
+
+        $instance = new Instance($numberUtilMock);
+
+        $actual = $instance->parse($msisdn);
+
+        $this->assertInstanceOf('Msidn\Server\Instance', $actual);
+    }
 }
