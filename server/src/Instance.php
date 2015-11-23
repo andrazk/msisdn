@@ -3,6 +3,7 @@
 namespace Msidn\Server;
 
 use libphonenumber\PhoneNumberUtil;
+use libphonenumber\PhoneNumberToCarrierMapper;
 
 class Instance
 {
@@ -13,23 +14,52 @@ class Instance
     protected $numberUtil;
 
     /**
-     * Parsed Photo
-     * @var PhoneNumber
+     * Carrier Mapper Dependecy
+     * @var PhoneNumberToCarrierMapper
      */
-    protected $number;
+    protected $carrierMapper;
+
+
+    public $countryDiallingCode;
+    public $countryIdentifier;
+    public $mnoIdentifier;
+    public $subscriberNumber;
+    public $valid;
+
 
     /**
      * __construct
      * @param  PhoneNumberUtil $numberUtil
      * @author Andraz <andraz.krascek@gmail.com>
      */
-    public function __construct(PhoneNumberUtil $numberUtil)
+    public function __construct(PhoneNumberUtil $numberUtil, PhoneNumberToCarrierMapper $carrierMapper)
     {
+        $this->setCarrierMapper($carrierMapper);
         $this->setNumberUtil($numberUtil);
     }
 
     /**
-     * NumberUtil getter
+     * Carrier Mapper Getter
+     * @return PhoneNumberToCarrierMapper
+     * @author Andraz <andraz.krascek@gmail.com>
+     */
+    public function getCarrierMapper()
+    {
+        return $this->carrierMapper;
+    }
+
+    /**
+     * Carrier Mapper Setter
+     * @param  PhoneNumberToCarrierMapper $carrierMapper
+     * @author Andraz <andraz.krascek@gmail.com>
+     */
+    public function setCarrierMapper(PhoneNumberToCarrierMapper $carrierMapper)
+    {
+        $this->carrierMapper = $carrierMapper;
+    }
+
+    /**
+     * PhoneNumberUtil Getter
      * @return PhoneNumberUtil
      * @author Andraz <andraz.krascek@gmail.com>
      */
@@ -39,7 +69,7 @@ class Instance
     }
 
     /**
-     * PhoneNumberUtil setter
+     * PhoneNumberUtil Setter
      * @param  PhoneNumberUtil $numberUtil
      * @author Andraz <andraz.krascek@gmail.com>
      */
@@ -56,7 +86,13 @@ class Instance
      */
     public function parse($number)
     {
-        $this->number = $this->numberUtil->parse($number, null);
+        $phoneNumber = $this->numberUtil->parse($number, null);
+
+        $this->countryDiallingCode = $phoneNumber->getCountryCode();
+        $this->countryIdentifier = $this->numberUtil->getRegionCodeForNumber($phoneNumber);
+        $this->mnoIdentifier = $this->carrierMapper->getNameForNumber($phoneNumber, 'en_US');
+        $this->subscriberNumber = $phoneNumber->getNationalNumber();
+        $this->valid = $this->numberUtil->isValidNumber($phoneNumber);
 
         return $this;
     }
