@@ -34,9 +34,10 @@ important: do not take this task lightly. You will be judged according to the qu
 git clone --recursive https://github.com/andrazk/msisdn.git
 cd msisdn
 vagrant up
-./client/client.sh <msisdn>
+cd client
+chmod +x client.sh && ./client.sh <msisdn>
 or
-go run client/client.go <msisdn>
+go run client.go <msisdn>
 ```
 
 ## Tests
