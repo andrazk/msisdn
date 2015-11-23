@@ -24,7 +24,7 @@ class deploy {
 
     # Run PHP web server
     exec { 'run-php-server':
-        command => 'php -S localhost:8000 > log &',
+        command => 'php -S 192.168.33.10:8000 > log &',
         cwd => '/vagrant/server',
         path =>  [ '/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/', '/usr/local/bin/' ],
         require => Exec['deploy-install'],
