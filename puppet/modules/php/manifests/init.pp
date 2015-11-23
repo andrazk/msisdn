@@ -35,4 +35,9 @@ class php {
     install_options => ['--allow-unauthenticated', '-f'],
     require => Exec['update-second'],
   }
+
+  package { 'php5-intl':
+    ensure => installed,
+    require => Package['php5'],
+  }
 }
