@@ -3,6 +3,7 @@
 use Msidn\Server\Instance;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\PhoneNumberToCarrierMapper;
+use libphonenumber\NumberParseException;
 
 class InstanceTest extends PHPUnit_Framework_TestCase
 {
@@ -53,5 +54,66 @@ class InstanceTest extends PHPUnit_Framework_TestCase
         $this->assertSame('SI', $actual->countryIdentifier);
         $this->assertSame('Si.mobil', $actual->mnoIdentifier);
         $this->assertSame('40658494', $actual->subscriberNumber);
+    }
+
+    /**
+     * Test if exception on parse is caught
+     * @return void
+     * @author Andraz <andraz@easistent.com>
+     */
+    public function test_parse_exception()
+    {
+        $msisdn = '+35345';
+
+        $exception = new NumberParseException(NumberParseException::NOT_A_NUMBER, "The phone number supplied was null.");
+
+        $phoneNumberMock = Mockery::mock('libphonenumber\PhoneNumber');
+
+        $numberUtilMock = Mockery::mock('libphonenumber\PhoneNumberUtil');
+        $numberUtilMock->shouldReceive('parse')->with($msisdn, null)->once()->andThrow($exception);
+
+        $carrierMapperMock = Mockery::mock('libphonenumber\PhoneNumberToCarrierMapper');
+
+        $instance = new Instance($numberUtilMock, $carrierMapperMock);
+
+        $actual = $instance->parse($msisdn);
+
+        $this->assertInstanceOf('Msidn\Server\Instance', $actual);
+        $this->assertFalse($actual->valid);
+        $this->assertSame(0, $actual->countryDiallingCode);
+        $this->assertSame('', $actual->countryIdentifier);
+        $this->assertSame('', $actual->mnoIdentifier);
+        $this->assertSame('', $actual->subscriberNumber);
+    }
+
+    /**
+     * Test if returns on invalid number
+     * @return void
+     * @author Andraz <andraz@easistent.com>
+     */
+    public function test_parse_invalid_number()
+    {
+        $msisdn = '+35345';
+
+        $exception = new NumberParseException(NumberParseException::NOT_A_NUMBER, "The phone number supplied was null.");
+
+        $phoneNumberMock = Mockery::mock('libphonenumber\PhoneNumber');
+
+        $numberUtilMock = Mockery::mock('libphonenumber\PhoneNumberUtil');
+        $numberUtilMock->shouldReceive('isValidNumber')->with($phoneNumberMock)->once()->andReturn(false);
+        $numberUtilMock->shouldReceive('parse')->with($msisdn, null)->once()->andReturn($phoneNumberMock);
+
+        $carrierMapperMock = Mockery::mock('libphonenumber\PhoneNumberToCarrierMapper');
+
+        $instance = new Instance($numberUtilMock, $carrierMapperMock);
+
+        $actual = $instance->parse($msisdn);
+
+        $this->assertInstanceOf('Msidn\Server\Instance', $actual);
+        $this->assertFalse($actual->valid);
+        $this->assertSame(0, $actual->countryDiallingCode);
+        $this->assertSame('', $actual->countryIdentifier);
+        $this->assertSame('', $actual->mnoIdentifier);
+        $this->assertSame('', $actual->subscriberNumber);
     }
 }
