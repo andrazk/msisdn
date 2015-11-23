@@ -22,3 +22,28 @@
     - use best practices all around. For PHP, good source of that would be http://www.phptherightway.com/
 
 important: do not take this task lightly. You will be judged according to the quality, completion and perfection of the task.
+
+## Requirements
+
+- [Vagrant](https://docs.vagrantup.com/v2/installation/)
+- [Go](https://golang.org/dl/)
+
+## Usage
+
+```
+git clone
+cd msisdn
+vagrant up
+go run client/client.go <msisdn_number>
+```
+
+## Tests
+
+```
+vagrant ssh
+cd /vagrant/server
+vendor/bin/phpunit
+```
+
+Author: Andraž Krašček
+E-mail: andraz.krascek@gmail.com
