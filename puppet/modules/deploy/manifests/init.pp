@@ -3,6 +3,8 @@ class deploy {
     require php
     require composer
 
+    package {'git':}
+
     file {'/home/vagrant/.composer':
         ensure => 'directory',
     }
